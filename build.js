@@ -129,12 +129,12 @@ async function main() {
   }
   await fs.ensureDir("./chromium");
   process.chdir("./chromium");
-  const hasSrc = await fs.pathExists("./chromium.src");
+  const hasSrc = await fs.pathExists("./src");
   console.log(`Clone chromium.src`);
   if (!hasSrc) {
     const gclient = `
 solutions = [
-    { "name"        : 'chromium.src',
+    { "name"        : 'src',
         "url"         : 'https://github.com/heyrizla/chromium.src.git',
         "deps_file"   : 'DEPS',
         "managed"     : False,
@@ -155,10 +155,11 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
       "nw44-log",
       "--single-branch",
       "--depth",
-      1
+      1,
+      "src"
     );
   }
-  process.chdir("./chromium.src");
+  process.chdir("./src");
   if (hasSrc) {
     await execAsync(
       "git",
@@ -166,7 +167,8 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
       "https://github.com/heyrizla/chromium.src.git",
       `+refs/tags/ac3`,
       "--depth",
-      1
+      1,
+      "src"
     );
   }
 
