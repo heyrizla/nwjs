@@ -135,7 +135,7 @@ async function main() {
     const gclient = `
 solutions = [
     { "name"        : 'src',
-        "url"         : 'https://github.com/heyrizla/chromium.src.git',
+        "url"         : 'https://github.com/heyrizla/custom-chromium.git',
         "deps_file"   : 'DEPS',
         "managed"     : False,
         "custom_deps" : {
@@ -150,10 +150,7 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     await execAsync(
       "git",
       "clone",
-      "https://github.com/heyrizla/chromium.src.git",
-      "--branch",
-      "nw44-log",
-      "--single-branch",
+      "https://github.com/heyrizla/custom-chromium.git",
       "--depth",
       1,
       "src"
@@ -164,15 +161,14 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     await execAsync(
       "git",
       "fetch",
-      "https://github.com/heyrizla/chromium.src.git",
-      `+refs/tags/ac3`,
+      "https://github.com/heyrizla/custom-chromium.git",
       "--depth",
       1,
       "src"
     );
   }
 
-  await execAsync("git", "reset", "--hard", `tags/ac3`);
+  await execAsync("git", "reset", "--hard");
 
   if (process.platform === "linux") {
     await setupLinux(program.arch === "arm");
