@@ -1,0 +1,9 @@
+/build/.gclient
+/build/.gclient_entries
+/build/depot_tools/
+/build/src/
+.DS_Store
+/releases
+/node_modules
+/build
+.idea/
