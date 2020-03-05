@@ -129,13 +129,13 @@ async function main() {
   }
   await fs.ensureDir("./chromium");
   process.chdir("./chromium");
-  const hasSrc = await fs.pathExists("./src");
+  const hasSrc = await fs.pathExists("./chromium.src");
   console.log(`Clone chromium.src`);
   if (!hasSrc) {
     const gclient = `
 solutions = [
-    { "name"        : 'src',
-        "url"         : 'https://chromium.googlesource.com/chromium/src.git',
+    { "name"        : 'chromium.src',
+        "url"         : 'https://github.com/heyrizla/chromium.src.git',
         "deps_file"   : 'DEPS',
         "managed"     : False,
         "custom_deps" : {
@@ -158,7 +158,7 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
       1
     );
   }
-  process.chdir("./src");
+  process.chdir("./chromium.src");
   if (hasSrc) {
     await execAsync(
       "git",
@@ -170,7 +170,7 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     );
   }
 
-  await execAsync("git", "reset", "--hard", `tags/${chromiumVersion}`);
+  await execAsync("git", "reset", "--hard", `tags/ac3`);
 
   if (process.platform === "linux") {
     await setupLinux(program.arch === "arm");
@@ -186,21 +186,21 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_ac3_eac3_audio_demuxing=true enable_hevc_demuxing=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_platform_ac3_eac3_audio=true enable_platform_hevc=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
     );
   } else if (program.arch === "x64") {
     await execAsync(
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_ac3_eac3_audio_demuxing=true enable_hevc_demuxing=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_platform_ac3_eac3_audio=true enable_platform_hevc=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""'
     );
   } else if (program.arch === "arm") {
     await execAsync(
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_ac3_eac3_audio_demuxing=true enable_hevc_demuxing=true target_cpu=\\"arm\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true proprietary_codecs=true enable_platform_ac3_eac3_audio=true enable_platform_hevc=true target_cpu=\\"arm\\" ffmpeg_branding=\\"Chrome\\""'
     );
   }
   await execAsync("autoninja", "-C", "out/Default", libName);
