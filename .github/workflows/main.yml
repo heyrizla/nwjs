@@ -11,7 +11,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: "12.x"
       - uses: actions/checkout@v2
       - name: npm install, build and test
         run: |
@@ -22,16 +22,17 @@ jobs:
         uses: skx/github-action-publish-binaries@master
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
         with:
-          args: 'build/out/*.zip'
+          args: "build/out/*.zip"
 
   build-macos:
-    runs-on: macos
+    runs-on: macos-latest
     steps:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: "12.x"
       - uses: actions/checkout@v2
       - name: npm install, build and test
         run: |
@@ -42,7 +43,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: 'build/out/*.zip'
+          args: "build/out/*.zip"
 
   build-linux:
     runs-on: ubuntu-latest
@@ -50,7 +51,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v1
         with:
-          node-version: '12.x'
+          node-version: "12.x"
       - uses: actions/checkout@v2
       - name: npm install, build and test
         run: |
@@ -63,4 +64,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          args: 'build/out/*.zip'
+          args: "build/out/*.zip"

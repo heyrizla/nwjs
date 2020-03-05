@@ -23,6 +23,7 @@
     "commander": "^4.1.0",
     "fs-extra": "^8.1.0",
     "got": "^10.2.2",
+    "replace-in-file": "^5.0.2",
     "yazl": "^2.5.1"
   }
 }

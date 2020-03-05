@@ -7,6 +7,7 @@ const program = require("commander");
 const yazl = require("yazl");
 const stream = require("stream");
 const { promisify } = require("util");
+const replace = require("replace-in-file");
 const pipeline = promisify(stream.pipeline);
 
 program
@@ -180,20 +181,49 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     await setupWin();
   }
 
+  try {
+    const options = {
+      files: "./media/media_options.gni",
+      from:
+        "enable_platform_ac3_eac3_audio = proprietary_codecs && is_chromecast",
+      to: "enable_platform_ac3_eac3_audio = true"
+    };
+    const changedFiles = replace.sync(options);
+    console.log(changedFiles);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    process.exit();
+  }
+
+  try {
+    const options = {
+      files: "./media/media_options.gni",
+      from: "enable_platform_hevc = proprietary_codecs && is_chromecast",
+      to: "enable_platform_hevc = true"
+    };
+    const changedFiles = replace.sync(options);
+    console.log(changedFiles);
+  } catch (error) {
+    console.error("Error occurred:", error);
+    process.exit();
+  }
+
   await execAsync("gclient", "sync", "--with_branch_heads");
+  await execAsync("gclient", "runhooks");
+
   if (program.arch === "ia32") {
     await execAsync(
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true proprietary_codecs=true enable_platform_ac3_eac3_audio=true enable_platform_hevc=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
     );
   } else if (program.arch === "x64") {
     await execAsync(
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true  is_official_build=true target_cpu=\\"x64\\" ffmpeg_branding=\\"Chrome\\""'
     );
   } else if (program.arch === "arm") {
     await execAsync(
