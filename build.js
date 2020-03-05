@@ -234,11 +234,16 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     );
   }
   await execAsync("autoninja", "-C", "out/Default", libName);
+
+  if (!fs.existsSync("./artifacts")) {
+    fs.mkdirSync("./artifacts");
+  }
+
   const zipFile = new yazl.ZipFile();
   zipFile.addFile(`out/Default/${libName}`, libName);
 
   zipFile.outputStream
-    .pipe(fs.createWriteStream(path.resolve(outDir, zipName)))
+    .pipe(fs.createWriteStream(path.resolve(outDir, "artifacts", zipName)))
     .on("close", () => {
       console.log(zipName);
     });

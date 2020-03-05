@@ -18,13 +18,13 @@ jobs:
           npm install
           node build --arch x64
           node build --arch ia32
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DEPOT_TOOLS_WIN_TOOLCHAIN: 0
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
         with:
-          args: "build/out/*.zip"
+          name: ${{ matrix.os }}
+          path: artifacts
 
   build-macos:
     runs-on: macos-latest
@@ -38,12 +38,11 @@ jobs:
         run: |
           npm install
           node build
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
         with:
-          args: "build/out/*.zip"
+          name: ${{ matrix.os }}
+          path: artifacts
 
   build-linux:
     runs-on: ubuntu-latest
@@ -59,9 +58,8 @@ jobs:
           node build --arch x64
           node build --arch ia32
           node build --arch arm
-      - name: Upload the artifacts
-        uses: skx/github-action-publish-binaries@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload artifacts
+        uses: actions/upload-artifact@master
         with:
-          args: "build/out/*.zip"
+          name: ${{ matrix.os }}
+          path: artifacts
