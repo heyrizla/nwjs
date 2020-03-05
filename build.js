@@ -209,7 +209,7 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
   }
 
   await execAsync("gclient", "sync", "--with_branch_heads");
-  await execAsync("gclient", "runhooks");
+  //await execAsync("gclient", "runhooks");
 
   if (program.arch === "ia32") {
     await execAsync(
