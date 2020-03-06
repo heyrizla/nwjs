@@ -5,45 +5,6 @@ on:
     types: [created]
 
 jobs:
-  build-win:
-    runs-on: windows-latest
-    steps:
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-      - uses: actions/checkout@v2
-      - name: npm install, build and test
-        run: |
-          npm install
-          node build --arch x64
-          node build --arch ia32
-        env:
-          DEPOT_TOOLS_WIN_TOOLCHAIN: 0
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ matrix.os }}
-          path: artifacts
-
-  build-macos:
-    runs-on: macos-latest
-    steps:
-      - name: Setup Node
-        uses: actions/setup-node@v1
-        with:
-          node-version: "12.x"
-      - uses: actions/checkout@v2
-      - name: npm install, build and test
-        run: |
-          npm install
-          node build
-      - name: Upload artifacts
-        uses: actions/upload-artifact@master
-        with:
-          name: ${{ matrix.os }}
-          path: artifacts
-
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -56,10 +17,8 @@ jobs:
         run: |
           npm install
           node build --arch x64
-          node build --arch ia32
-          node build --arch arm
       - name: Upload artifacts
         uses: actions/upload-artifact@master
         with:
           name: ${{ matrix.os }}
-          path: artifacts
+          path: build/out

@@ -70,7 +70,7 @@ async function main() {
     console.error(`NW.js version ${nwVersion} could not be found.`);
     process.exit(1);
   }
-  const chromiumVersion = version["components"]["chromium"];
+  const chromiumVersion = "80.0.3987.122";
   let libName = null;
   let zipName = null;
   const platform = program.platform || process.platform;
@@ -181,33 +181,6 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     await setupWin();
   }
 
-  try {
-    const options = {
-      files: "./media/media_options.gni",
-      from:
-        "enable_platform_ac3_eac3_audio = proprietary_codecs && is_chromecast",
-      to: "enable_platform_ac3_eac3_audio = true"
-    };
-    const changedFiles = replace.sync(options);
-    console.log(changedFiles);
-  } catch (error) {
-    console.error("Error occurred:", error);
-    process.exit();
-  }
-
-  try {
-    const options = {
-      files: "./media/media_options.gni",
-      from: "enable_platform_hevc = proprietary_codecs && is_chromecast",
-      to: "enable_platform_hevc = true"
-    };
-    const changedFiles = replace.sync(options);
-    console.log(changedFiles);
-  } catch (error) {
-    console.error("Error occurred:", error);
-    process.exit();
-  }
-
   await execAsync("gclient", "sync", "--with_branch_heads");
   //await execAsync("gclient", "runhooks");
 
@@ -216,7 +189,7 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
       "gn",
       "gen",
       "out/Default",
-      '--args="is_debug=false is_component_ffmpeg=true proprietary_codecs=true enable_platform_ac3_eac3_audio=true enable_platform_hevc=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
+      '--args="is_debug=false is_component_ffmpeg=true is_official_build=true target_cpu=\\"x86\\" ffmpeg_branding=\\"Chrome\\""'
     );
   } else if (program.arch === "x64") {
     await execAsync(
@@ -234,20 +207,6 @@ ${platform === "arm" ? 'target_cpu=["arm"]' : ""}
     );
   }
   await execAsync("autoninja", "-C", "out/Default", libName);
-
-  if (!fs.existsSync("./artifacts")) {
-    fs.mkdirSync("./artifacts");
-  }
-
-  const zipFile = new yazl.ZipFile();
-  zipFile.addFile(`out/Default/${libName}`, libName);
-
-  zipFile.outputStream
-    .pipe(fs.createWriteStream(path.resolve(outDir, "artifacts", zipName)))
-    .on("close", () => {
-      console.log(zipName);
-    });
-  zipFile.end();
 }
 
 main().catch(e => {
